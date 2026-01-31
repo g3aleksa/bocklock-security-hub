@@ -23,6 +23,9 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
+  // Check if we're on the home page (has dark hero)
+  const isHomePage = location.pathname === `/${language}` || location.pathname === `/${language}/`;
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -30,6 +33,9 @@ export function Header() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Determine if we should use light text (transparent header on dark hero)
+  const useLightText = isHomePage && !isScrolled;
 
   const navItems = [
     { path: '', label: t.nav.home },
@@ -52,7 +58,9 @@ export function Header() {
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         isScrolled
           ? 'bg-white shadow-md'
-          : 'bg-white/95 backdrop-blur-sm'
+          : isHomePage
+            ? 'bg-transparent'
+            : 'bg-white shadow-sm'
       )}
     >
       <div className="container mx-auto px-4">
@@ -63,12 +71,18 @@ export function Header() {
             className="flex items-center gap-2 group"
           >
             <div className="relative">
-              <Shield className="h-8 w-8 text-accent transition-transform group-hover:scale-110" />
+              <Shield className={cn(
+                "h-8 w-8 transition-transform group-hover:scale-110",
+                useLightText ? "text-accent" : "text-accent"
+              )} />
               <div className="absolute inset-0 bg-accent/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <span className="text-2xl font-heading font-bold">
               <span className="text-accent">Bock</span>
-              <span className="text-primary">Lock</span>
+              <span className={cn(
+                "transition-colors",
+                useLightText ? "text-white" : "text-primary"
+              )}>Lock</span>
             </span>
           </Link>
 
@@ -79,10 +93,12 @@ export function Header() {
                 key={item.path}
                 to={getLocalizedPath(item.path)}
                 className={cn(
-                  'text-sm font-medium transition-colors hover:text-accent',
+                  'text-sm font-medium transition-colors',
                   isActive(item.path)
                     ? 'text-accent'
-                    : 'text-primary/80'
+                    : useLightText 
+                      ? 'text-white/90 hover:text-accent'
+                      : 'text-primary/80 hover:text-accent'
                 )}
               >
                 {item.label}
@@ -95,7 +111,16 @@ export function Header() {
             {/* Language Switcher */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-2 text-primary hover:text-accent">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className={cn(
+                    "gap-2",
+                    useLightText 
+                      ? "text-white hover:text-accent hover:bg-white/10" 
+                      : "text-primary hover:text-accent"
+                  )}
+                >
                   <span className="text-lg">{currentLanguage?.flag}</span>
                   <span className="text-sm">{language.toUpperCase()}</span>
                   <ChevronDown className="h-4 w-4" />
@@ -133,7 +158,9 @@ export function Header() {
               variant="ghost"
               size="icon"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-primary"
+              className={cn(
+                useLightText ? "text-white hover:bg-white/10" : "text-primary"
+              )}
             >
               {isMenuOpen ? (
                 <X className="h-6 w-6" />
