@@ -71,7 +71,7 @@ export default function HomePage() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="border-white/50 text-white hover:bg-white/10 hover:border-white px-8"
+                className="border-white text-white bg-transparent hover:bg-white/10 hover:text-white px-8"
               >
                 <Link to={getLocalizedPath('/contact')}>
                   {t.home.hero.contactUs}
