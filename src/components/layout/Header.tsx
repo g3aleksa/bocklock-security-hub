@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Sun, Moon, ChevronDown, Shield } from 'lucide-react';
+import { Menu, X, ChevronDown, Shield } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
-import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -20,7 +19,6 @@ const languages = [
 
 export function Header() {
   const { language, setLanguage, t, getLocalizedPath } = useLanguage();
-  const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
@@ -53,8 +51,8 @@ export function Header() {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         isScrolled
-          ? 'bg-background/95 backdrop-blur-md shadow-md'
-          : 'bg-transparent'
+          ? 'bg-white shadow-md'
+          : 'bg-white/95 backdrop-blur-sm'
       )}
     >
       <div className="container mx-auto px-4">
@@ -70,7 +68,7 @@ export function Header() {
             </div>
             <span className="text-2xl font-heading font-bold">
               <span className="text-accent">Bock</span>
-              <span className="text-foreground">Lock</span>
+              <span className="text-primary">Lock</span>
             </span>
           </Link>
 
@@ -84,7 +82,7 @@ export function Header() {
                   'text-sm font-medium transition-colors hover:text-accent',
                   isActive(item.path)
                     ? 'text-accent'
-                    : 'text-foreground/80'
+                    : 'text-primary/80'
                 )}
               >
                 {item.label}
@@ -97,7 +95,7 @@ export function Header() {
             {/* Language Switcher */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-2">
+                <Button variant="ghost" size="sm" className="gap-2 text-primary hover:text-accent">
                   <span className="text-lg">{currentLanguage?.flag}</span>
                   <span className="text-sm">{language.toUpperCase()}</span>
                   <ChevronDown className="h-4 w-4" />
@@ -120,20 +118,6 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Theme Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="rounded-full"
-            >
-              {theme === 'light' ? (
-                <Moon className="h-5 w-5" />
-              ) : (
-                <Sun className="h-5 w-5" />
-              )}
-            </Button>
-
             {/* CTA Button */}
             <Button
               asChild
@@ -148,19 +132,8 @@ export function Header() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={toggleTheme}
-              className="rounded-full"
-            >
-              {theme === 'light' ? (
-                <Moon className="h-5 w-5" />
-              ) : (
-                <Sun className="h-5 w-5" />
-              )}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-primary"
             >
               {isMenuOpen ? (
                 <X className="h-6 w-6" />
@@ -174,7 +147,7 @@ export function Header() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-background/95 backdrop-blur-md border-t">
+        <div className="lg:hidden bg-white border-t shadow-lg">
           <nav className="container mx-auto px-4 py-4 flex flex-col gap-2">
             {navItems.map((item) => (
               <Link
@@ -185,7 +158,7 @@ export function Header() {
                   'px-4 py-3 rounded-lg text-sm font-medium transition-colors',
                   isActive(item.path)
                     ? 'bg-accent/10 text-accent'
-                    : 'text-foreground/80 hover:bg-muted'
+                    : 'text-primary/80 hover:bg-muted'
                 )}
               >
                 {item.label}
