@@ -23,9 +23,6 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
-  // Check if we're on the home page (has dark hero)
-  const isHomePage = location.pathname === `/${language}` || location.pathname === `/${language}/`;
-
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -34,8 +31,8 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Determine if we should use light text (transparent header on dark hero)
-  const useLightText = isHomePage && !isScrolled;
+  // Use light text when header is transparent (not scrolled)
+  const useLightText = !isScrolled;
 
   const navItems = [
     { path: '', label: t.nav.home },
@@ -58,9 +55,7 @@ export function Header() {
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         isScrolled
           ? 'bg-white shadow-md'
-          : isHomePage
-            ? 'bg-transparent'
-            : 'bg-white shadow-sm'
+          : 'bg-transparent'
       )}
     >
       <div className="container mx-auto px-4">
